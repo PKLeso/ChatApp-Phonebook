@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen();
 //    options.EnableDetailedErrors = true;
 //});
 ConfigurationManager configuration = builder.Configuration;
-builder.Services.AddSignalR().AddAzureSignalR();
+builder.Services.AddSignalR(); //.AddAzureSignalR();
 
 builder.Services.AddDbContext<PhonebookDbContext>(options =>
 {
@@ -55,12 +55,12 @@ app.UseAuthorization();
 //    {
 //        route.UseHub<HubConfigExtension>("/chat");
 //    });
-app.UseAzureSignalR(endpoints =>
-{
-    endpoints.MapHub<HubConfigExtension>("/chat");
-});
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapHub<HubConfigExtension>("/chat");
+//});
 
-//app.MapHub<HubConfigExtension>("/chat");
+app.MapHub<HubConfigExtension>("/chat");
 
 app.MapControllers();
 

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using PhoneBook.Data;
 using PhoneBook.Dto;
 using PhoneBook.Models;
+using System.Linq;
 
 namespace PhoneBook.Extensions.HubConfig
 {
@@ -79,8 +81,12 @@ namespace PhoneBook.Extensions.HubConfig
                     ModifiedDate = DateTime.Now
                 };
 
-                await context.Connections.AddAsync(currentUser);
-                await context.SaveChangesAsync();
+                var existingUserId = context.Connections.Where(x => x.UserId == tempUser.Id);
+                if (existingUserId == null)
+                {
+                    await context.Connections.AddAsync(currentUser);
+                    await context.SaveChangesAsync();
+                }
 
 
                 ConnectedUser newUser = new ConnectedUser
@@ -94,13 +100,15 @@ namespace PhoneBook.Extensions.HubConfig
         }
 
 
-        public void Logout(Guid userId)
+        public void Logout(string userId)
         {
-            context.Connections.RemoveRange(context.Connections.Where(u => u.UserId == userId).ToList());
+            var temp = context.Connections.Where(s => s.SignalRId == userId).SingleOrDefault();
+            context.Connections.RemoveRange(context.Connections.Where(u => u.SignalRId == userId).ToList());
             context.SaveChanges();
 
             Clients.Caller.SendAsync("LogoutResponse");
-            Clients.Others.SendAsync("UserOff", userId);
+            if(temp != null)
+            Clients.Others.SendAsync("UserOff", temp.UserId); // userId);
         }
     }
 }

@@ -40,6 +40,7 @@ export class AppComponent  implements OnInit, OnDestroy{
 
   logOut() {
     this.authService.removeToken();
+    console.log("conn Id: ", this.signalrService.userData$.connectionId);
     // signal r
     this.signalrService.hubConnection$.invoke("Logout", this.signalrService.userData$.connectionId)
     .catch(err => console.error(err));
@@ -50,8 +51,17 @@ export class AppComponent  implements OnInit, OnDestroy{
   logoutListener(): void {
     this.signalrService.hubConnection$.on("LogoutResponse", () => {
       localStorage.removeItem("userId");
+      this.userOfListener();
       location.reload();
     })
   }
+
+  userOfListener(): void {
+    this.signalrService.hubConnection$.on("UserOff", (userId: string) => {
+      console.log('remove: ', userId);
+      //this.users = this.users.filter(f => f.id != userId);
+    });
+  }
+
 
 }

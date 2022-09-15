@@ -30,8 +30,8 @@ namespace PhoneBook.Extensions.HubConfig
                 User tempUser = context.Users.Where(u => u.Username == userLogin.Username && u.Password == userLogin.Password).SingleOrDefault();
 
 
-                if (userLogin.Username == tempUser.Username
-                    && userLogin.Password == tempUser.Password) // This is for testing purposes. Ideally yous get user details from the database
+                if (userLogin.Username == tempUser.Username // configuration["TemporaryLoginDetails:Username"] //
+                    && userLogin.Password == tempUser.Password) // configuration["TemporaryLoginDetails:Password"]) // This is for testing purposes. Ideally yous get user details from the database
                 {
                     var secreteKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtOptions:Key"]));
                     var signingCredentials = new SigningCredentials(secreteKey, SecurityAlgorithms.HmacSha256);

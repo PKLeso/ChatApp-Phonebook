@@ -64,6 +64,7 @@ export class SignalRAuthComponent implements OnInit, OnDestroy {
   }
   getOnlineUsersListener() {
     this.signalrService.hubConnection$.on("GetOnlineUsersResponse", (onlineUsers: Array<User>) => {
+      console.log('online users: ', onlineUsers);
       this.users = [...onlineUsers];
     })
   }
