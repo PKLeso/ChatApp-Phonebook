@@ -125,5 +125,8 @@
       }
     }
   },
-  "defaultProject": "AngularPhonebook"
+  "defaultProject": "AngularPhonebook",
+  "cli": {
+    "analytics": "3b87bd41-59a4-4bf5-9a94-4fdf5c8cc8af"
+  }
 }

@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using PhoneBook.Data;
 using PhoneBook.Extensions;
 using PhoneBook.Extensions.HubConfig;
+using Microsoft.Azure.SignalR;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,10 +17,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //SignalR
-builder.Services.AddSignalR(options =>
-{
-    options.EnableDetailedErrors = true;
-});
+//builder.Services.AddSignalR(options =>
+//{
+//    options.EnableDetailedErrors = true;
+//});
+ConfigurationManager configuration = builder.Configuration;
+builder.Services.AddSignalR().AddAzureSignalR();
 
 builder.Services.AddDbContext<PhonebookDbContext>(options =>
 {
@@ -41,12 +45,22 @@ app.UseHttpsRedirection();
 
 app.UseCors("ËnableCorsForAngularApp");
 
-
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
 //SignalR
-app.MapHub<HubConfigExtension>("/chat");
+//app.UseAzureSignalR(app.Configuration.GetConnectionString("Azure:SignalRConnectionString"), 
+//    route =>
+//    {
+//        route.UseHub<HubConfigExtension>("/chat");
+//    });
+app.UseAzureSignalR(endpoints =>
+{
+    endpoints.MapHub<HubConfigExtension>("/chat");
+});
+
+//app.MapHub<HubConfigExtension>("/chat");
 
 app.MapControllers();
 
